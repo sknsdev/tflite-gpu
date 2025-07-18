@@ -38,7 +38,8 @@
 - Docker с поддержкой GPU
 - NVIDIA GPU (протестировано на RTX 3070)
 - WSL2 (для Windows)
-- NVIDIA Container Toolkit
+- cudnn 9.11.0
+- cuda 12.9.0
 
 ### Быстрый старт
 
@@ -83,32 +84,6 @@ docker run --rm --gpus all -v %cd%:/app card-recognition python test_model.py
 5. **Тестирование на конкретном изображении:**
 ```bash
 docker run --rm --gpus all -v %cd%:/app card-recognition python test_model.py /app/cards/laar/1/laar_1.webp
-```
-
-**Способ 3: Docker Compose**
-
-```bash
-# Проверка окружения
-docker-compose run card-recognition
-
-# Обучение модели
-docker-compose run train
-
-# Тестирование
-docker-compose run test
-```
-
-### Команда из задания
-
-Как указано в задании, вы можете использовать:
-```bash
-docker run -it --gpus all -v absolute_path/src:/app/ --name container_name tensorflow/tensorflow:latest-gpu
-```
-
-Затем внутри контейнера:
-```bash
-pip install -r requirements.txt
-python train_model.py
 ```
 
 ## Результаты
