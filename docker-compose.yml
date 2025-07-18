@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  card-recognition:
+    build: .
+    container_name: card-recognition-training
+    volumes:
+      - .:/app
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: python check_gpu.py
+    
+  train:
+    build: .
+    container_name: card-recognition-train
+    volumes:
+      - .:/app
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: python train_model.py
+    
+  test:
+    build: .
+    container_name: card-recognition-test
+    volumes:
+      - .:/app
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: python test_model.py
