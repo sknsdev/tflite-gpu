@@ -5,7 +5,16 @@
 """
 
 import numpy as np
-import tensorflow as tf
+try:
+    # Попытка использовать новый LiteRT API
+    from ai_edge_litert.interpreter import Interpreter
+    USING_LITERT = True
+except ImportError:
+    # Fallback на старый TensorFlow Lite API
+    import tensorflow as tf
+    from tensorflow.lite.python.interpreter import Interpreter
+    USING_LITERT = False
+
 from PIL import Image
 import json
 import os
@@ -30,7 +39,7 @@ class CardPredictor:
             print(f"Ошибка: модель не найдена по пути {self.model_path}")
             return False
             
-        self.interpreter = tf.lite.Interpreter(model_path=self.model_path)
+        self.interpreter = Interpreter(model_path=self.model_path)
         self.interpreter.allocate_tensors()
         
         self.input_details = self.interpreter.get_input_details()
@@ -60,8 +69,15 @@ class CardPredictor:
             img = Image.open(image_path).convert('RGB')
             img = img.resize((224, 224))
             
-            # Нормализация
-            img_array = np.array(img, dtype=np.float32) / 255.0
+            # Проверяем тип входного тензора
+            input_dtype = self.input_details[0]['dtype']
+            
+            if input_dtype == np.uint8:
+                # Для UINT8 модели - без нормализации
+                img_array = np.array(img, dtype=np.uint8)
+            else:
+                # Для FLOAT32 модели - с нормализацией
+                img_array = np.array(img, dtype=np.float32) / 255.0
             
             # Добавление batch dimension
             img_array = np.expand_dims(img_array, axis=0)
