@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:2.19.0-gpu
+FROM tensorflow/tensorflow:2.13.0-gpu
 
 # Установка системных зависимостей
 RUN apt-get update && apt-get install -y \

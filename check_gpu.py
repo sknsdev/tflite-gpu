@@ -33,7 +33,7 @@ def check_gpu_availability():
             print("    Детали недоступны")
     
     # Проверка доступности CUDA
-    print(f"\nCUDA доступна: {tf.test.is_gpu_available()}")
+    print(f"\nCUDA доступна: {tf.config.list_physical_devices('GPU')}")
     
     if len(gpu_devices) > 0:
         print("\n✓ GPU найден и готов к использованию!")
